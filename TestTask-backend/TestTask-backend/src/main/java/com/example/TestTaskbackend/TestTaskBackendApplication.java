@@ -29,7 +29,7 @@ public class TestTaskBackendApplication implements CommandLineRunner {
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split(",");
 				if(data[0] != "name"){
-					System.out.println(data[0] + ' ' + data[1]);
+					//System.out.println(data[0] + ' ' + data[1]);
 					this.personRepository.save(new Person(data[0], data[1]));
 				}
 			}

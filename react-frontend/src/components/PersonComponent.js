@@ -1,7 +1,6 @@
 import React from 'react';
 import PersonService from '../services/PersonService';
 import Pagination from 'react-paginate';
-import Search from '../components/DataTable/Search';
 
 class PersonComponent extends React.Component {
 
@@ -13,7 +12,8 @@ class PersonComponent extends React.Component {
             offset:0,
             orgtableData:[],
             perPage: 10,
-            currentPage:0
+            currentPage:0,
+            search: ""
         }
         this.handlePageClick = this.handlePageClick.bind(this);
     }
@@ -37,18 +37,22 @@ class PersonComponent extends React.Component {
     }
     componentDidMount(){
         PersonService.getPersons().then((response) => {
-            const data = response.data;
-
+            const data = response.data;            
             const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-
             this.setState({ 
                 pageCount: Math.ceil(data.length / this.state.perPage),
                 orgtableData: response.data,
                 persons: slice })
         });
     }
+    onchange = e => { this.setState({ search : e.target.value });
+    }
 
     render () {
+        const {search} = this.state;
+        const filterdPersons = !search ? this.state.persons : this.state.orgtableData.filter( persons => {
+            return persons.name.toLowerCase().indexOf( search.toLowerCase() ) !== -1
+        })
         return(
             <div>
                 <h1 className="text-center"> Contact List</h1>
@@ -61,7 +65,7 @@ class PersonComponent extends React.Component {
                                    nextLabel={"next"}
                                    breakLabel={"..."}
                                    breakClassName={"break-me"}
-                                   pageCount={this.state.pageCount}
+                                   pageCount={!search ? this.state.pageCount : Math.ceil(filterdPersons.length / this.state.perPage)}
                                    marginPagesDisplayed={2}
                                    pageRangeDisplayed={5}
                                    onPageChange={this.handlePageClick}
@@ -71,7 +75,13 @@ class PersonComponent extends React.Component {
                                 />
                             </div>
                             <div className="col-md-6 d-flex flex-row-reverse">
-                                <Search />
+                                <input 
+                                    type="text"
+                                    className="form-control"
+                                    style={{ width: "240px" }}
+                                    placeholder="Search"
+                                    onChange={this.onchange}
+                                />
                             </div>
                         </div>
                         
@@ -84,12 +94,12 @@ class PersonComponent extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.persons.map(
+                                {filterdPersons.map(
                                         person => 
                                         <tr key = { person.id}>
                                             <td> { person.id } </td>
                                             <td> { person.name } </td>
-                                            <td> <span><img src={person.url} alt="personImage" /></span></td>
+                                            <td> <span><img src={person.url} alt="personImage" height="100" maxwidth="70"/></span></td>
                                         </tr>
                                     )
                                 }
