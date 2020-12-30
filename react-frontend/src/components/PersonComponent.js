@@ -53,6 +53,7 @@ class PersonComponent extends React.Component {
         const filterdPersons = !search ? this.state.persons : this.state.orgtableData.filter( persons => {
             return persons.name.toLowerCase().indexOf( search.toLowerCase() ) !== -1
         })
+        const filterd = !search ? this.state.persons : filterdPersons.slice(this.state.offset, this.state.offset + this.state.perPage)
         return(
             <div>
                 <h1 className="text-center"> Contact List</h1>
@@ -66,6 +67,7 @@ class PersonComponent extends React.Component {
                                    breakLabel={"..."}
                                    breakClassName={"break-me"}
                                    pageCount={!search ? this.state.pageCount : Math.ceil(filterdPersons.length / this.state.perPage)}
+                                   //pageCount={this.state.pageCount}
                                    marginPagesDisplayed={2}
                                    pageRangeDisplayed={5}
                                    onPageChange={this.handlePageClick}
@@ -94,7 +96,7 @@ class PersonComponent extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filterdPersons.map(
+                                {filterd.map(
                                         person => 
                                         <tr key = { person.id}>
                                             <td> { person.id } </td>
