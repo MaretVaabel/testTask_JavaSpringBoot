@@ -11,7 +11,7 @@ class PersonComponent extends React.Component {
             persons:[],
             offset:0,
             orgtableData:[],
-            perPage: 10,
+            perPage: 5,
             currentPage:0,
             search: ""
         }
@@ -56,11 +56,35 @@ class PersonComponent extends React.Component {
         const filterd = !search ? this.state.persons : filterdPersons.slice(this.state.offset, this.state.offset + this.state.perPage)
         return(
             <div>
-                <h1 className="text-center"> Contact List</h1>
-                <div className="row w-100">
+                <h1 className="text-center m-5"> Contact List</h1>
+                <div className="row w-100 pr-2 pl-4">
                     <div className="col mb-3 col-12 text-center">
+                        <div className="row mb-2">
+                            <div className="col-md-12 d-flex flex-row-reverse">
+                                <input 
+                                    type="text"
+                                    className="form-control"
+                                    style={{ width: "240px" }}
+                                    placeholder="Search"
+                                    onChange={this.onchange}
+                                />
+                            </div>
+                        </div>
+                        
+                        <table className="table table-striped">
+                            <tbody>
+                                {filterd.map(
+                                        person => 
+                                        <tr key = { person.id}>
+                                            <td> <span><img src={person.url} alt="personImage" height="100" maxwidth="70"/></span></td>
+                                            <td> { person.name } </td>     
+                                        </tr>
+                                    )
+                                }
+                            </tbody>
+                        </table>
                         <div className="row">
-                            <div className="col-md-6">
+                            <div className="col-md-12 d-flex center">
                                 <Pagination 
                                    previousLabel={"prev"}
                                    nextLabel={"next"}
@@ -76,37 +100,7 @@ class PersonComponent extends React.Component {
                                    activeClassName={"active"}
                                 />
                             </div>
-                            <div className="col-md-6 d-flex flex-row-reverse">
-                                <input 
-                                    type="text"
-                                    className="form-control"
-                                    style={{ width: "240px" }}
-                                    placeholder="Search"
-                                    onChange={this.onchange}
-                                />
-                            </div>
                         </div>
-                        
-                        <table className="table table-striped">
-                            <thead>
-                                <tr>
-                                    <td>Person id</td>
-                                    <td>Person name</td>
-                                    <td>Person image</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filterd.map(
-                                        person => 
-                                        <tr key = { person.id}>
-                                            <td> { person.id } </td>
-                                            <td> { person.name } </td>
-                                            <td> <span><img src={person.url} alt="personImage" height="100" maxwidth="70"/></span></td>
-                                        </tr>
-                                    )
-                                }
-                            </tbody>
-                        </table>
                     </div>
                 </div>  
             </div>
